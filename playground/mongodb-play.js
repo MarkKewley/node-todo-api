@@ -60,6 +60,17 @@ const findOneAndDelete = (db, collectionName, query) => {
         })
 };
 
+const findOneAndUpdate = (db, collectionName, query, updateValue) => {
+    db.collection(collectionName)
+        .findOneAndUpdate(query, updateValue, { returnOriginal: false })
+        .then(result => {
+            console.log(JSON.stringify(result, undefined, 2))
+        })
+        .catch(err => {
+            console.log('Unable to update document', err);
+        });
+};
+
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     if (err) {
@@ -67,8 +78,16 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     }
     console.log('Connected to MongoDB server');
 
-    deleteMany(db, UserCollection, { name: 'Mark' });
-    findOneAndDelete(db, UserCollection, { _id: new ObjectID('58e0ffeecf8cebae616098a6') });
+    findOneAndUpdate(db, UserCollection, {
+        _id: new ObjectID("58e0ffdbcf8cebae616098a2")
+    }, {
+        $inc: {
+            age: 1
+        },
+        $set: {
+            name: 'Jennifer'
+        }
+    });
 
     db.close();
 });
