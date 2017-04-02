@@ -25,3 +25,5 @@ app.post('/todos', (req, res) => {
 app.listen(9001, () => {
     console.log('Started on port 9001');
 });
+
+module.exports = { app };
