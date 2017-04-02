@@ -13,7 +13,9 @@ describe('Server Test', () => {
         },
         {
             _id: new ObjectID(),
-            text: 'Second Test Todo'
+            text: 'Second Test Todo',
+            completed: true,
+            completedAt: 333
         }
     ];
 
@@ -140,6 +142,42 @@ describe('Server Test', () => {
             request(app)
                 .delete(`/todos/COCONUT`)
                 .expect(404)
+                .end(done);
+        });
+    });
+
+    describe('PATCH /todos/:id', () => {
+        it('Should update the todo', done => {
+            const hexId = todos[0]._id.toHexString();
+            const newText = 'I\'ve got a lovely bunch of coconuts';
+
+            request(app)
+                .patch(`/todos/${hexId}`)
+                .send({ completed: true, text: newText})
+                .expect(200)
+                .expect(res => {
+                    const { todo } = res.body;
+                    expect(todo.completed).toBe(true);
+                    expect(todo.text).toBe(newText);
+                    expect(todo.completedAt).toBeA('number');
+                })
+                .end(done);
+        });
+
+        it('Should clear completedAt when todo is not completed', done => {
+            const hexId = todos[1]._id.toHexString();
+            const newText = 'I\'ve got a lovely bunch of coconuts';
+
+            request(app)
+                .patch(`/todos/${hexId}`)
+                .send({ completed: false, text: newText })
+                .expect(200)
+                .expect(res => {
+                    const { todo } = res.body;
+                    expect(todo.completed).toBe(false);
+                    expect(todo.text).toBe(newText);
+                    expect(todo.completedAt).toNotExist();
+                })
                 .end(done);
         });
     });
