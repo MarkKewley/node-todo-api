@@ -27,6 +27,39 @@ const findDocuments = (db, collectionName, query) => {
         });
 };
 
+const deleteOneDocument = (db, collectionName, query) => {
+    db.collection(collectionName)
+        .deleteOne(query)
+        .then(result => {
+            console.log('Successfully deleted')
+        })
+        .catch(err => {
+            console.log('Unable to delete record', err)
+        });
+};
+
+const deleteMany = (db, collectionName, query) => {
+    db.collection(collectionName)
+        .deleteMany(query)
+        .then(result => {
+            console.log('Successfully deleted');
+        })
+        .catch(err => {
+            console.log('Unable to delete records', err);
+        });
+};
+
+const findOneAndDelete = (db, collectionName, query) => {
+    db.collection(collectionName)
+        .findOneAndDelete(query)
+        .then(result => {
+            console.log(JSON.stringify(result, undefined, 2));
+        })
+        .catch(err => {
+            console.log('Unable to find', err);
+        })
+};
+
 
 MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     if (err) {
@@ -34,7 +67,8 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db) => {
     }
     console.log('Connected to MongoDB server');
 
-    findDocuments(db, UserCollection, { name: 'Mark' });
+    deleteMany(db, UserCollection, { name: 'Mark' });
+    findOneAndDelete(db, UserCollection, { _id: new ObjectID('58e0ffeecf8cebae616098a6') });
 
     db.close();
 });
