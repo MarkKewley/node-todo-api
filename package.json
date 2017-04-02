@@ -4,8 +4,12 @@
   "description": "Basic API",
   "main": "index.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'"
+  },
+  "engines": {
+    "node": "7.7.4"
   },
   "author": "Mark Kewley",
   "license": "ISC",
