@@ -22,6 +22,12 @@ app.post('/todos', (req, res) => {
         })
 });
 
+app.get('/todos', (req, res) => {
+    Todo.find()
+        .then(todos => res.send({ todos }))
+        .catch(err => res.status(500).send(err))
+});
+
 app.listen(9001, () => {
     console.log('Started on port 9001');
 });
