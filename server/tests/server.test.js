@@ -103,5 +103,31 @@ describe('Server Test', () => {
                 .end(done);
         });
 
-    })
+    });
+
+    describe('DELETE /todos/:id', () => {
+
+        it('Should delete a todo document', done => {
+            request(app)
+                .delete(`/todos/${todos[0]._id}`)
+                .expect(200)
+                .expect(res => expect(res.body.todo.text).toBe(todos[0].text))
+                .end(done);
+        });
+
+        it('Should return a 404 when an id does not exist', done => {
+            const hexId = new ObjectID().toHexString();
+            request(app)
+                .delete(`/todos/${hexId}`)
+                .expect(404)
+                .end(done);
+        });
+
+        it('Should return a 404 when id is invalid', done => {
+            request(app)
+                .delete(`/todos/COCONUT`)
+                .expect(404)
+                .end(done);
+        });
+    });
 });
