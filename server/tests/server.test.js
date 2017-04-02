@@ -108,11 +108,24 @@ describe('Server Test', () => {
     describe('DELETE /todos/:id', () => {
 
         it('Should delete a todo document', done => {
+            const hexId = todos[0]._id.toHexString();
+
             request(app)
-                .delete(`/todos/${todos[0]._id}`)
+                .delete(`/todos/${hexId}`)
                 .expect(200)
-                .expect(res => expect(res.body.todo.text).toBe(todos[0].text))
-                .end(done);
+                .expect(res => expect(res.body.todo._id).toBe(hexId))
+                .end((err, res) => {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    Todo.findById(hexId)
+                        .then(todo => {
+                            expect(todo).toNotExist();
+                            done();
+                        })
+                        .catch(err => done(err));
+                });
         });
 
         it('Should return a 404 when an id does not exist', done => {
